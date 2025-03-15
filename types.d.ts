@@ -11,11 +11,15 @@
   }
 
   interface Input1Type {
-    title: string;
+    title?: string;
     name: string;
     setValue: React.Dispatch<React.SetStateAction<T>>;
+    defaultValue?: string | undefined;
     errorsData?: ErrorItem[];
-    render?: boolean
+    render?: boolean | string;
+    placeholder?: string;
+    Button?: () => void;
+    loader?: boolean
   }
 
   interface InputAvatarType {
@@ -27,13 +31,13 @@
   }
 
   interface InputDropDownType {
-    title: string;
+    title?: string;
     data: PickedInputDropDownType[];
     name: string;
     setValue: React.Dispatch<React.SetStateAction<T>>;
+    defaultValue?: number | null;
     errorsData?: ErrorItem[];
     render?: boolean | string | number;
-    defaultValue?: string;
     disabled?: boolean;
     addEmployeeButton?: boolean;
   }
@@ -109,4 +113,46 @@
     id: number;
     status: boolean;
     error: string;
+  }
+
+  interface TaskItem {
+    id: number;
+    name: string;
+    description: string;
+    due_date: string;
+    department: Department;
+    employee: Employee;
+    priority: Priority;
+    status: Status;
+    total_comments?: number;
+  };
+
+  interface Task {
+    id: number;
+    status: string;
+    tasks: TaskItem[]; 
+  };
+
+  interface Taskcard {
+    data: TaskItem | null;
+    small?: boolean
+  };
+
+  interface SingleTaskStatusValues {
+    status_id: Status | null;
+  }
+  
+  interface SingleTaskCommentValues {
+    text: string;
+    parent_id: number | null;
+  }
+
+  interface SingleTaskComment {
+    id: number;
+    task_id: number;
+    parent_id: number | null;
+    text: string;
+    author_nickname: string;
+    author_avatar: string;
+    sub_comments?: SingleTaskComment[] | [];
   }

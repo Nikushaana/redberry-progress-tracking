@@ -11,9 +11,9 @@ export default function InputDropDown({
   data,
   name,
   setValue,
+  defaultValue,
   errorsData,
   render,
-  defaultValue,
   disabled,
   addEmployeeButton,
 }: InputDropDownType) {
@@ -32,7 +32,7 @@ export default function InputDropDown({
   useEffect(() => {
     if (defaultValue) {
       const foundItem = data.find(
-        (item: PickedInputDropDownType) => item.name == defaultValue
+        (item: PickedInputDropDownType) => item.id == defaultValue
       );
 
       setPickedInput(foundItem || null);
@@ -66,7 +66,7 @@ export default function InputDropDown({
 
   return (
     <div className="flex flex-col gap-y-[6px]">
-      <h2 className="text-[14px]">{title}</h2>
+      {title && <h2 className="text-[14px]">{title}</h2>}
       <div ref={DropDownRef} className={`relative w-full`}>
         <div
           onClick={() => {
@@ -117,7 +117,7 @@ export default function InputDropDown({
               ? data.length < 5
                 ? addEmployeeButton
                   ? data.length * 42 + 45
-                  : (data.length * 42) + 3
+                  : data.length * 42 + 3
                 : addEmployeeButton
                 ? 255
                 : 213

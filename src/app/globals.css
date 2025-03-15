@@ -5,6 +5,30 @@
   --color-myYellow: #F7BC30;
   --color-myGreen: #08A508;
   --color-myRed: #FA4D4D;
+  --color-myOrange: #FB5607;
+  --color-myPink: #FF006E;
+  --color-myBlue: #3A86FF;
+
+  --animate-wave: wave 3s linear infinite ;
+
+  @keyframes wave {
+    0% {
+      transform: translateX(-100%);
+    }
+    50% {
+      transform: translateX(50%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+}
+
+.wave {
+  width: 400%;
+  height: 100%;
+  background: linear-gradient(90deg, white, #dadada, white);
+  animation: wave 4s linear infinite;
 }
 
 @font-face {
@@ -49,3 +73,4 @@ body.popup-open {
   background: #8338EC;
   border-radius: 10px;
 }
+

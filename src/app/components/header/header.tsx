@@ -10,10 +10,15 @@ import { useRouter } from "next/navigation";
 export default function Header() {
   const { setAddEmployeeModalStatus } = useContext(SharedStates);
   const router = useRouter();
-  
+
   return (
     <div className="flex items-center justify-between px-[118px] h-[100px]">
-      <div className="relative h-[38px] w-[210px]">
+      <div
+        onClick={() => {
+          router.push("/");
+        }}
+        className="relative h-[38px] w-[210px]"
+      >
         <Image
           src="/images/Frame 1000006027.png"
           alt=""

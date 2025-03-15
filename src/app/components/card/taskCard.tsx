@@ -1,36 +1,54 @@
 import Image from "next/image";
 import React from "react";
-import PriorityFrame from "../priorityFrame/priorityFrame";
+import moment from "moment";
+import { useRouter } from "next/navigation";
+import PriorityAndDepartment from "../priorityAndDepartment/PriorityAndDepartment";
 
-export default function TaskCard() {
+export default function TaskCard({ data }: Taskcard) {
+  const router = useRouter();
+  moment.locale("ka");
+
   return (
-    <div className="rounded-[15px] border-[1px] border-myYellow p-[20px] flex flex-col gap-y-[28px]">
+    <div
+      onClick={() => {
+        router.push(`/task/${data?.id}`);
+      }}
+      className={`rounded-[15px] border-[1px] p-[20px] flex flex-col gap-y-[28px] cursor-pointer ${
+        data?.status.name === "დასაწყები"
+          ? "border-myYellow"
+          : data?.status.name === "პროგრესში"
+          ? "border-myOrange"
+          : data?.status.name === "მზად ტესტირებისთვის"
+          ? "border-myPink"
+          : data?.status.name === "დასრულებული" && "border-myBlue"
+      }`}
+    >
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-[10px]">
-          <PriorityFrame />
-          <p className="bg-myRed flex items-center justify-center h-[24px] w-[88px] text-[12px] rounded-[15px] text-white">
-            დიზაინი
-          </p>
-        </div>
-        <p className="text-[12px]">22 იანვ, 2022</p>
+        <PriorityAndDepartment data={data} small={true} />
+        <p className="text-[12px]">
+          {moment(data?.due_date).format("DD MMMM YYYY")}
+        </p>
       </div>
       <div className="px-[10px] flex flex-col gap-y-[12px]">
-        <h1 className="text-[15px]">Redberry-ს საიტის ლენდინგის დიზაინი </h1>
+        <h1 className="text-[15px]">{data?.name}</h1>
         <p className="text-[14px] text-[#343A40]">
-          შექმენი საიტის მთავარი გვერდი, რომელიც მოიცავს მთავარ სექციებს,
-          ნავიგაციას.
+          {data?.description && data?.description.length > 100
+            ? `${data?.description.slice(0, 100)}..`
+            : data?.description}
         </p>
       </div>
       <div className="flex items-center justify-between">
         <div className="relative h-[31px] aspect-square rounded-full overflow-hidden">
-          <Image
-            src="/images/girl.jpeg"
-            alt=""
-            fill
-            style={{
-              objectFit: "cover",
-            }}
-          />
+          {data?.employee.avatar && (
+            <Image
+              src={data?.employee.avatar}
+              alt=""
+              fill
+              style={{
+                objectFit: "cover",
+              }}
+            />
+          )}
         </div>
         <div className="flex items-center gap-[4px]">
           <div className="relative h-[22px] aspect-square">
@@ -43,7 +61,7 @@ export default function TaskCard() {
               }}
             />
           </div>
-          <p className="text-[14px]">8</p>
+          <p className="text-[14px]">{data?.total_comments}</p>
         </div>
       </div>
     </div>

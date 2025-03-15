@@ -7,11 +7,18 @@ export default function Input1({
   title,
   name,
   setValue,
+  defaultValue,
   errorsData,
   render,
 }: Input1Type) {
   const [input, setInput] = useState<string>("");
 
+  useEffect(() => {
+    if (defaultValue) {
+      setInput(defaultValue);
+    }
+  }, [defaultValue]);
+  
   useEffect(() => {
     if (render) {
       setInput("");

@@ -7,6 +7,7 @@ export default function InputCalendar({
   title,
   name,
   setValue,
+  defaultValue,
   errorsData,
   render,
 }: Input1Type) {
@@ -17,6 +18,12 @@ export default function InputCalendar({
   };
   
   const [input, setInput] = useState<string>(getTomorrowDate());
+
+  useEffect(() => {
+    if (defaultValue) {
+      setInput(defaultValue);
+    }
+  }, [defaultValue]);
 
   useEffect(() => {
     if (render) {

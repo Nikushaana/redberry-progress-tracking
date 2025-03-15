@@ -14,6 +14,7 @@ import * as Yup from "yup";
 import { axiosUser } from "../../../dataFetchs/AxiosToken";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import useTasks from "../../../dataFetchs/useTasks";
 
 export default function Page() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function Page() {
   const { employeesData } = useEmployees();
   const { prioritiesData } = usePriorities();
   const { statusData } = useStatus();
+  const { fetchTasks } = useTasks();
 
   const [createNewTaskValues, setCreateNewTaskValues] =
     useState<CreateNewTaskValues>({
@@ -32,6 +34,20 @@ export default function Page() {
       priority_id: null,
       department_id: null,
     });
+
+  const [parsedCreateNewTaskValues, setParsedCreateNewTaskValues] =
+    useState<CreateNewTaskValues | null>(null);
+
+  useEffect(() => {
+    const getCreateNewTaskValues = localStorage.getItem(
+      "create-new-task-values"
+    );
+    if (getCreateNewTaskValues) {
+      const parsedValues = JSON.parse(getCreateNewTaskValues);
+
+      setParsedCreateNewTaskValues(parsedValues);
+    }
+  }, []);
 
   const [errors, setErrors] = useState<CreateNewTaskValidationErrors>({});
 
@@ -69,6 +85,11 @@ export default function Page() {
   });
 
   useEffect(() => {
+    localStorage.setItem(
+      "create-new-task-values",
+      JSON.stringify(createNewTaskValues)
+    );
+
     validationSchema
       .validate(createNewTaskValues, { abortEarly: false })
       .then(() => {
@@ -97,7 +118,9 @@ export default function Page() {
           priority_id: createNewTaskValues.priority_id?.id,
         })
         .then((res) => {
+          fetchTasks();
           toast.success("დავალება დაემატა!");
+          localStorage.removeItem("create-new-task-values");
           router.push("/");
           console.log(res);
         })
@@ -125,6 +148,7 @@ export default function Page() {
           title="სათაური*"
           name="name"
           setValue={setCreateNewTaskValues}
+          defaultValue={parsedCreateNewTaskValues?.name || ""}
           errorsData={[
             {
               id: 1,
@@ -143,6 +167,7 @@ export default function Page() {
           data={departmentsData}
           name="department_id"
           setValue={setCreateNewTaskValues}
+          defaultValue={parsedCreateNewTaskValues?.department_id?.id || null}
           errorsData={[
             {
               id: 1,
@@ -155,6 +180,7 @@ export default function Page() {
           title="აღწერა"
           name="description"
           setValue={setCreateNewTaskValues}
+          defaultValue={parsedCreateNewTaskValues?.description || ""}
           errorsData={[
             {
               id: 1,
@@ -204,7 +230,7 @@ export default function Page() {
             data={prioritiesData}
             name="priority_id"
             setValue={setCreateNewTaskValues}
-            defaultValue="საშუალო"
+            defaultValue={parsedCreateNewTaskValues?.priority_id?.id || 2}
             errorsData={[
               {
                 id: 1,
@@ -218,7 +244,7 @@ export default function Page() {
             data={statusData}
             name="status_id"
             setValue={setCreateNewTaskValues}
-            defaultValue="დასაწყები"
+            defaultValue={parsedCreateNewTaskValues?.status_id?.id || 1}
             errorsData={[
               {
                 id: 1,
@@ -233,6 +259,7 @@ export default function Page() {
             title="დედლაინი"
             name="due_date"
             setValue={setCreateNewTaskValues}
+            defaultValue={parsedCreateNewTaskValues?.due_date}
             errorsData={[
               {
                 id: 1,
