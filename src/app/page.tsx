@@ -2,7 +2,7 @@ import TaskCard from "./components/card/taskCard";
 
 export default function Page() {
   return (
-    <div className="px-[118px] pt-[40px] pb-[140px] flex flex-col gap-y-[]">
+    <div className="px-[118px] pt-[40px] pb-[140px] flex flex-col">
       <h1 className="text-[34px]">დავალებების გვერდი</h1>
       <div className="mt-[52px] flex items-center gap-[45px] rounded-[10px] border-[1px] border-[#DEE2E6] h-[44px] self-start">
         <p className="w-[200px] h-full flex items-center justify-center">
