@@ -144,7 +144,7 @@
   
   interface SingleTaskCommentValues {
     text: string;
-    parent_id: number | null;
+    parent_id?: number | null;
   }
 
   interface SingleTaskComment {
@@ -155,4 +155,17 @@
     author_nickname: string;
     author_avatar: string;
     sub_comments?: SingleTaskComment[] | [];
+  }
+
+  interface FilterComponent {
+    id: number;
+    title: string;
+    titleEng: keyof FilterItems;
+    data: Department[] | Employee[] | Priority[] | null; 
+  }
+
+  interface FilterItems {
+    departments: number[],
+    priorities: number[],
+    employees: string
   }

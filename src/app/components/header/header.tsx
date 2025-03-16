@@ -17,7 +17,7 @@ export default function Header() {
         onClick={() => {
           router.push("/");
         }}
-        className="relative h-[38px] w-[210px]"
+        className="relative h-[38px] w-[210px] cursor-pointer"
       >
         <Image
           src="/images/Frame 1000006027.png"

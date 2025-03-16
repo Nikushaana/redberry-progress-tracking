@@ -12,8 +12,7 @@ const useStatus = () => {
       .then((res) => {
         setStatusData(res.data);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
       })
       .finally(() => {});
   };

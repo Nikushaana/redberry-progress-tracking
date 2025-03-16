@@ -4,6 +4,7 @@ import Header from "./components/header/header";
 import AddEmployeeModal from "./components/modals/addEmployeeModal";
 import { SharedStatesProvider } from "../../dataFetchs/sharedStates";
 import { ToastContainer } from "react-toastify";
+import { EmployeesContextProvider } from "../../dataFetchs/useEmployees";
 
 export const metadata: Metadata = {
   title: "Redberry Progress Tracking",
@@ -19,11 +20,13 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <SharedStatesProvider>
-          <div>
-            <Header />
-            {children}
-            <AddEmployeeModal />
-          </div>
+          <EmployeesContextProvider>
+            <div>
+              <Header />
+              {children}
+              <AddEmployeeModal />
+            </div>
+          </EmployeesContextProvider>
         </SharedStatesProvider>
         <ToastContainer
           position="top-right"

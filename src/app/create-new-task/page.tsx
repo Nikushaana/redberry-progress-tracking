@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Button2 from "../components/buttons/button2";
 import Input1 from "../components/input/input1";
 import InputDropDown from "../components/input/inputDropDown";
 import useDepartments from "../../../dataFetchs/useDepartments";
 import InputTextarea from "../components/input/inputTextarea";
 import InputCalendar from "../components/input/inputCalendar";
-import useEmployees from "../../../dataFetchs/useEmployees";
 import usePriorities from "../../../dataFetchs/usePriorities";
 import useStatus from "../../../dataFetchs/useStatus";
 import * as Yup from "yup";
@@ -15,12 +14,13 @@ import { axiosUser } from "../../../dataFetchs/AxiosToken";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import useTasks from "../../../dataFetchs/useTasks";
+import { Employees } from "../../../dataFetchs/useEmployees";
 
 export default function Page() {
   const router = useRouter();
   const { departmentsData } = useDepartments();
-  const { employeesData } = useEmployees();
   const { prioritiesData } = usePriorities();
+  const { employeesData } = useContext(Employees);
   const { statusData } = useStatus();
   const { fetchTasks } = useTasks();
 
@@ -117,16 +117,14 @@ export default function Page() {
           employee_id: createNewTaskValues.employee_id?.id,
           priority_id: createNewTaskValues.priority_id?.id,
         })
-        .then((res) => {
+        .then(() => {
           fetchTasks();
           toast.success("დავალება დაემატა!");
           localStorage.removeItem("create-new-task-values");
           router.push("/");
-          console.log(res);
         })
-        .catch((err) => {
+        .catch(() => {
           toast.error("ვერ დაემატა!");
-          console.log(err);
         })
         .finally(() => {
           setCreateNewTaskLoader(false);

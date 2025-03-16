@@ -12,8 +12,7 @@ const usePriorities = () => {
       .then((res) => {
         setPrioritiesData(res.data);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
       })
       .finally(() => {});
   };

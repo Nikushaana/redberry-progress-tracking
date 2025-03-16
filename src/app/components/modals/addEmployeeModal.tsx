@@ -12,13 +12,13 @@ import { axiosUser } from "../../../../dataFetchs/AxiosToken";
 import InputAvatar from "../input/inputAvatar";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
-import useEmployees from "../../../../dataFetchs/useEmployees";
+import { Employees } from "../../../../dataFetchs/useEmployees";
 
 export default function AddEmployeeModal() {
   const { addEmployeeModalStatus, setAddEmployeeModalStatus } =
     useContext(SharedStates);
   const { departmentsData } = useDepartments();
-  const { fetchEmployees } = useEmployees();
+  const { fetchEmployees } = useContext(Employees);
 
   const [addEmployeeValues, setAddEmployeeValues] = useState<EmployeeValues>({
     name: "",
@@ -102,15 +102,13 @@ export default function AddEmployeeModal() {
 
       axiosUser
         .post("employees", formData)
-        .then((res) => {
+        .then(() => {
           setAddEmployeeModalStatus(false);
           toast.success("თანამშრომელი დაემატა!");
           fetchEmployees();
-          console.log({ res });
         })
-        .catch((err) => {
+        .catch(() => {
           toast.error("ვერ დაემატა!");
-          console.log({ err });
         })
         .finally(() => {
           setAddEmployeeModalLoader(false);

@@ -12,7 +12,7 @@ export default function Button2({ text, button, loader, action }: Button2Type) {
   ) : button ? (
     <button
       type="submit"
-      className="h-[39px] px-[20px] rounded-[5px] bg-BrightViolet text-white flex items-center gap-[4px] cursor-pointer"
+      className="h-[39px] px-[20px] rounded-[5px] bg-BrightViolet hover:bg-BrightVioletHover duration-100  text-white flex items-center gap-[4px] cursor-pointer"
     >
       <BsPlusLg />
 
@@ -21,7 +21,7 @@ export default function Button2({ text, button, loader, action }: Button2Type) {
   ) : (
     <div
       onClick={action}
-      className="h-[39px] px-[20px] rounded-[5px] bg-BrightViolet text-white flex items-center gap-[4px] cursor-pointer"
+      className="h-[39px] px-[20px] rounded-[5px] bg-BrightViolet hover:bg-BrightVioletHover duration-100  text-white flex items-center gap-[4px] cursor-pointer"
     >
       <BsPlusLg />
 

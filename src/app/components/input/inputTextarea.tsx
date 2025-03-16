@@ -48,11 +48,13 @@ export default function InputTextarea({
     <div className="flex flex-col gap-y-[6px]">
       {title && <h2 className="text-[14px]">{title}</h2>}
       <div
-        className={`border-[1px] flex items-center bg-white h-[135px] w-full p-[10px] ${
+        className={`border-[1px] flex items-center bg-white h-[135px] w-full p-[10px]  ${
+          Button ? "rounded-[10px] relative border-[#ADB5BD]" : "rounded-[5px]"
+        } ${
           input && errorsData?.find((item1: ErrorItem) => item1.status === true)
             ? "border-myRed"
             : "border-[#CED4DA]"
-        } ${Button ? "rounded-[10px] relative" : "rounded-[5px]"}`}
+        }`}
       >
         <textarea
           name={name}
@@ -64,9 +66,7 @@ export default function InputTextarea({
         {Button && (
           <p
             onClick={Button}
-            className={`bg-BrightViolet text-white flex items-center gap-[10px] z-[1] h-[35px] px-[20px] absolute bottom-[10px] right-[10px] rounded-full ${
-              loader ? "pointer-events-none opacity-[0.5]" : "cursor-pointer "
-            }`}
+            className={`bg-BrightViolet text-white flex items-center gap-[10px] z-[1] h-[35px] px-[20px] absolute bottom-[10px] right-[10px] rounded-full cursor-pointer`}
           >
             {loader && <BiLoaderAlt className="animate-spin" />} დააკომენტარე
           </p>

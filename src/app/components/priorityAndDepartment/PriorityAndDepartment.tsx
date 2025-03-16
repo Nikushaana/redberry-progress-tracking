@@ -33,7 +33,22 @@ export default function PriorityAndDepartment({ data, small }: Taskcard) {
         <h2 className={`${small && "text-[12px]"}`}>{data?.priority.name}</h2>
       </div>
       <p
-        className={`bg-myRed flex items-center justify-center px-[10px] rounded-[15px] text-white ${
+        className={`flex items-center justify-center px-[10px] rounded-[15px] text-white ${
+          data?.department.id &&
+          (data?.department.id == 1
+            ? "bg-myLightPink"
+            : data?.department.id == 2
+            ? "bg-myLightYellow"
+            : data?.department.id == 3
+            ? "bg-myLightYellow"
+            : data?.department.id == 4
+            ? "bg-myLightOrange"
+            : data?.department.id == 5
+            ? "bg-myGreen"
+            : data?.department.id == 6
+            ? "bg-myPink"
+            : data?.department.id == 7 && "bg-BrightViolet")
+        } ${
           small
             ? "h-[24px] text-[12px] max-w-[140px] truncate line-clamp-1"
             : "h-[29px]"

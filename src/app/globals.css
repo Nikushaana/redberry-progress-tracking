@@ -2,12 +2,18 @@
 
 @theme {
   --color-BrightViolet: #8338EC;
+  --color-BrightVioletHover: #B588F4;
   --color-myYellow: #F7BC30;
   --color-myGreen: #08A508;
   --color-myRed: #FA4D4D;
   --color-myOrange: #FB5607;
   --color-myPink: #FF006E;
   --color-myBlue: #3A86FF;
+
+  --color-myLightPink: #FF66A8;
+  --color-myLightYellow: #FFD86D;
+  --color-myLightYellow: #89B6FF;
+  --color-myLightOrange: #FD9A6A;
 
   --animate-wave: wave 3s linear infinite ;
 

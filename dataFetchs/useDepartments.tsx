@@ -12,9 +12,7 @@ const useDepartments = () => {
       .then((res) => {
         setDepartmentsData(res.data);
       })
-      .catch((err) => {
-        console.log(err);
-      })
+      .catch(() => {})
       .finally(() => {});
   };
 

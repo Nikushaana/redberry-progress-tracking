@@ -13,6 +13,7 @@ import moment from "moment";
 import InputTextarea from "@/app/components/input/inputTextarea";
 import { PiArrowBendUpLeftFill } from "react-icons/pi";
 import { BiLoaderAlt } from "react-icons/bi";
+import { toast } from "react-toastify";
 
 export default function Page({
   params,
@@ -25,16 +26,17 @@ export default function Page({
 
   //  get single task data
   const [singleTaskData, setSingleTaskData] = useState<TaskItem | null>(null);
+  const [singleTaskLoader, setSingleTaskLoader] = useState<boolean>(true);
 
   useEffect(() => {
+    setSingleTaskLoader(true);
     axiosUser
       .get(`tasks/${taskId}`)
       .then((res) => {
         setSingleTaskData(res.data);
+        setSingleTaskLoader(false);
       })
-      .catch((err) => {
-        console.log(err);
-      })
+      .catch(() => {})
       .finally(() => {});
   }, [taskId]);
   //  get single task data
@@ -45,31 +47,37 @@ export default function Page({
       status_id: null,
     });
 
+  const [singleTaskStatusLoader, setSingleTaskStatusLoader] =
+    useState<boolean>(false);
+
   useEffect(() => {
     if (
       singleTaskStatusValue?.status_id?.id &&
       singleTaskData?.status?.id &&
       singleTaskStatusValue?.status_id?.id !== singleTaskData?.status?.id
     ) {
+      setSingleTaskStatusLoader(true);
       axiosUser
         .put(`tasks/${taskId}`, {
           status_id: singleTaskStatusValue?.status_id?.id,
         })
-        .then((res) => {
-          console.log(res);
+        .then(() => {
+          toast.success("სტატუსი შეიცვალა!");
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(() => {
+          toast.error("სტატუსი ვერ შეიცვალა!");
         })
-        .finally(() => {});
+        .finally(() => {
+          setSingleTaskStatusLoader(false);
+        });
     }
   }, [taskId, singleTaskData?.status?.id, singleTaskStatusValue]);
   //  update single task status
 
   //  get single task comments data
   const [singleTaskCommentsData, setSingleTaskCommentsData] = useState<
-    SingleTaskComment[] | null
-  >(null);
+    SingleTaskComment[] | []
+  >([]);
 
   const [singleTaskCommentsRender, setSingleTaskCommentsRender] =
     useState<string>("");
@@ -82,11 +90,9 @@ export default function Page({
     axiosUser
       .get(`tasks/${taskId}/comments`)
       .then((res) => {
-        setSingleTaskCommentsData(res.data);
+        setSingleTaskCommentsData(res.data.reverse());
       })
-      .catch((err) => {
-        console.log(err);
-      })
+      .catch(() => {})
       .finally(() => {
         setSingleTaskCommentsLoader(false);
       });
@@ -97,47 +103,121 @@ export default function Page({
   const [singleTaskCommentValue, setSingleTaskCommentValue] =
     useState<SingleTaskCommentValues>({
       text: "",
-      parent_id: null,
     });
 
   const [createSingleTaskCommentLoader, setCreateSingleTaskCommentLoader] =
     useState<boolean>(false);
 
   const HandleCreateSingleTaskComment = () => {
-    if (singleTaskCommentValue?.text) {
+    if (singleTaskCommentValue?.text.trim()) {
       setCreateSingleTaskCommentLoader(true);
       setSingleTaskCommentsLoader(true);
       axiosUser
         .post(`tasks/${taskId}/comments`, {
           text: singleTaskCommentValue?.text,
-          parent_id: singleTaskCommentValue?.parent_id || null,
+          parent_id: null,
         })
-        .then((res) => {
-          setSingleTaskCommentsRender(`${res}`);
-          setSingleTaskCommentValue((prev: SingleTaskCommentValues) => ({
-            ...prev,
-            parent_id: null,
-          }));
+        .then(() => {
+          setSingleTaskCommentsRender(`${new Date()}`);
+
+          toast.success("კომენტარი დაიწერა!");
         })
-        .catch((err) => {
+        .catch(() => {
           setSingleTaskCommentsLoader(false);
-          console.log(err);
+          toast.error("კომენტარი ვერ დაემატა!");
         })
         .finally(() => {
           setCreateSingleTaskCommentLoader(false);
         });
+    } else {
+      toast.warn("დაწერე კომენტარი!");
     }
   };
   //  create single task comment
+  //  create single task comment reply
+
+  const [singleTaskCommentReplyValue, setSingleTaskCommentReplyValue] =
+    useState<SingleTaskCommentValues>({
+      text: "",
+      parent_id: null,
+    });
+
+  const [
+    createSingleTaskCommentReplyLoader,
+    setCreateSingleTaskCommentReplyLoader,
+  ] = useState<number | null | undefined>(undefined);
+
+  const HandleCreateSingleTaskCommentReply = () => {
+    if (singleTaskCommentReplyValue?.text?.trim()) {
+      setCreateSingleTaskCommentReplyLoader(
+        singleTaskCommentReplyValue?.parent_id
+      );
+      setSingleTaskCommentsLoader(true);
+      axiosUser
+        .post(`tasks/${taskId}/comments`, {
+          text: singleTaskCommentReplyValue?.text,
+          parent_id: singleTaskCommentReplyValue?.parent_id || null,
+        })
+        .then(() => {
+          setSingleTaskCommentsRender(`${new Date()}`);
+          setSingleTaskCommentReplyValue((prev: SingleTaskCommentValues) => ({
+            ...prev,
+            parent_id: null,
+          }));
+          toast.success("საპასუხო კომენტარი დაიწერა!");
+        })
+        .catch(() => {
+          setSingleTaskCommentsLoader(false);
+          toast.error("საპასუხო კომენტარი ვერ დაემატა!");
+        })
+        .finally(() => {
+          setCreateSingleTaskCommentReplyLoader(null);
+        });
+    } else {
+      toast.warn("დაწერე საპასუხო კომენტარი!");
+    }
+  };
+
+  //  create single task comment reply
 
   return (
-    <div className="px-[118px] pt-[40px] pb-[140px] flex flex-col">
-      <PriorityAndDepartment data={singleTaskData} />
-
+    <div
+      className={`px-[118px] pt-[40px] pb-[140px] flex flex-col ${
+        singleTaskStatusLoader && "pointer-events-none opacity-[0.5]"
+      }`}
+    >
+      {singleTaskLoader ? (
+        <div className="flex items-center gap-[10px]">
+          {[1, 2].map((item3: number) => (
+            <div
+              key={item3}
+              className="h-[32px] w-[150px] rounded-[5px] overflow-hidden"
+            >
+              <div className="wave"></div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <PriorityAndDepartment data={singleTaskData} />
+      )}
       <div className="flex gap-[50px] mt-[12px]">
         <div className="w-[calc(100%-791px)]">
-          <h1 className="text-[34px]">{singleTaskData?.name}</h1>
-          <p className="text-[18px] mt-[26px]">{singleTaskData?.description}</p>
+          {singleTaskLoader ? (
+            <div className="h-[60px] w-[350px] rounded-[5px] overflow-hidden">
+              <div className="wave"></div>
+            </div>
+          ) : (
+            <h1 className="text-[34px]">{singleTaskData?.name}</h1>
+          )}
+          {singleTaskLoader ? (
+            <div className="h-[200px] w-[600px] rounded-[5px] overflow-hidden mt-[26px]">
+              <div className="wave"></div>
+            </div>
+          ) : (
+            <p className="text-[18px] mt-[26px]">
+              {singleTaskData?.description}
+            </p>
+          )}
           <h1 className="text-[24px] mt-[63px]">დავალების დეტალები</h1>
           <div className="mt-[18px] grid grid-cols-2 w-[530px] text-[#474747]">
             <div className="flex items-center gap-[6px] h-[70px]">
@@ -145,51 +225,79 @@ export default function Page({
               <p>სტატუსი</p>
             </div>
             <div className="h-[70px]">
-              <InputDropDown
-                data={statusData}
-                name="status_id"
-                setValue={setSingleTaskStatusValue}
-                defaultValue={singleTaskData?.status.id}
-              />
+              {singleTaskLoader ? (
+                <div className="h-[40px] w-full rounded-[5px] overflow-hidden">
+                  <div className="wave"></div>
+                </div>
+              ) : (
+                <InputDropDown
+                  data={statusData}
+                  name="status_id"
+                  setValue={setSingleTaskStatusValue}
+                  defaultValue={singleTaskData?.status.id}
+                />
+              )}
             </div>
             <div className="flex items-center gap-[6px] h-[70px]">
               <GoPerson className="text-[24px] w-[24px] flex items-center justify-center" />
               <p>თანამშრომელი</p>
             </div>
             <div className="flex items-center gap-[12px] h-[70px]">
-              <div className="relative h-[32px] aspect-square rounded-full overflow-hidden">
-                {singleTaskData?.employee.avatar && (
-                  <Image
-                    src={singleTaskData?.employee.avatar}
-                    alt=""
-                    fill
-                    style={{
-                      objectFit: "cover",
-                    }}
-                  />
-                )}
-              </div>
-              <p className="text-[14px] flex items-center relative w-[calc(100%-44px)]">
-                {singleTaskData?.employee.name +
-                  " " +
-                  singleTaskData?.employee.surname}{" "}
-                <span className="absolute left-0 top-[-15px] text-[11px] w-full shrink-0 text-[#474747]">
-                  {singleTaskData?.department.name}
-                </span>
-              </p>
+              {singleTaskLoader ? (
+                <div className="h-[32px] aspect-square rounded-full overflow-hidden">
+                  <div className="wave"></div>
+                </div>
+              ) : (
+                <div className="relative h-[32px] aspect-square rounded-full overflow-hidden">
+                  {singleTaskData?.employee.avatar && (
+                    <Image
+                      src={singleTaskData?.employee.avatar}
+                      alt=""
+                      fill
+                      style={{
+                        objectFit: "cover",
+                      }}
+                    />
+                  )}
+                </div>
+              )}
+              {singleTaskLoader ? (
+                <div className="h-[32px] w-[calc(100%-44px)] rounded-[5px] overflow-hidden">
+                  <div className="wave"></div>
+                </div>
+              ) : (
+                <p className="text-[14px] flex items-center relative w-[calc(100%-44px)]">
+                  {singleTaskData?.employee.name +
+                    " " +
+                    singleTaskData?.employee.surname}{" "}
+                  <span className="absolute left-0 top-[-15px] text-[11px] w-full shrink-0 text-[#474747]">
+                    {singleTaskData?.department.name}
+                  </span>
+                </p>
+              )}
             </div>
             <div className="flex items-center gap-[6px] h-[70px]">
               <MdOutlineCalendarToday className="text-[24px] w-[24px] flex items-center justify-center" />
               <p>დავალების ვადა</p>
             </div>
             <div className="flex items-center h-[70px]">
-              <p className="text-[14px]">
-                {moment(singleTaskData?.due_date).format("dddd - DD/MM/YYYY")}
-              </p>
+              {singleTaskLoader ? (
+                <div className="h-[40px] w-full rounded-[5px] overflow-hidden">
+                  <div className="wave"></div>
+                </div>
+              ) : (
+                <p className="text-[14px]">
+                  {moment(singleTaskData?.due_date).format("dddd - DD/MM/YYYY")}
+                </p>
+              )}
             </div>
           </div>
         </div>
-        <div className="bg-[#DDD2FF] rounded-[10px] self-start py-[40px] px-[45px] w-[741px]">
+        <div
+          className={`bg-[#faf7fe] rounded-[10px] self-start py-[40px] px-[45px] w-[741px] ${
+            singleTaskCommentsLoader && "pointer-events-none opacity-[0.5]"
+          }`}
+        >
           <InputTextarea
             name="text"
             setValue={setSingleTaskCommentValue}
@@ -201,7 +309,13 @@ export default function Page({
           <div className="flex items-center gap-[7px] mt-[66px]">
             <h1 className="text-[20px]">კომენტარი</h1>
             <p className="text-white bg-BrightViolet flex items-center justify-center h-[22px] px-[10px] rounded-[30px] text-[14px]">
-              {singleTaskCommentsData?.length || 0}
+              {singleTaskCommentsData?.reduce(
+                (sum, comment) =>
+                  sum +
+                  1 +
+                  (comment.sub_comments ? comment.sub_comments.length : 0),
+                0 || 0
+              )}
             </p>
             {singleTaskCommentsLoader && (
               <div>
@@ -222,12 +336,12 @@ export default function Page({
                   />
                 )}
               </div>
-              <div className="flex flex-col gap-y-[10px]">
+              <div className="flex flex-col gap-y-[10px] w-full">
                 <h1 className="text-[18px]">{item?.author_nickname}</h1>
                 <p className="text-[#343A40]">{item?.text}</p>
                 <div
                   onClick={() => {
-                    setSingleTaskCommentValue(
+                    setSingleTaskCommentReplyValue(
                       (prev: SingleTaskCommentValues) => ({
                         ...prev,
                         parent_id: item.id === prev.parent_id ? null : item.id,
@@ -235,7 +349,7 @@ export default function Page({
                     );
                   }}
                   className={`flex items-center gap-[6px] self-start duration-75 text-BrightViolet border-b-[1px] ${
-                    singleTaskCommentValue.parent_id === item.id
+                    singleTaskCommentReplyValue.parent_id === item.id
                       ? "border-b-BrightViolet"
                       : "border-b-transparent"
                   } cursor-pointer`}
@@ -244,25 +358,46 @@ export default function Page({
                   <p className="text-[12px]">უპასუხე</p>
                 </div>
 
+                <div
+                  className={`w-full duration-100 ${
+                    singleTaskCommentReplyValue.parent_id == item.id
+                      ? "h-[135px]"
+                      : "h-0 overflow-hidden opacity-0"
+                  }`}
+                >
+                  <InputTextarea
+                    name="text"
+                    setValue={setSingleTaskCommentReplyValue}
+                    placeholder="დაწერე საპასუხო კომენტარი"
+                    render={singleTaskCommentsRender}
+                    Button={HandleCreateSingleTaskCommentReply}
+                    loader={createSingleTaskCommentReplyLoader == item.id}
+                  />
+                </div>
+
                 {item?.sub_comments &&
-                  item?.sub_comments?.map((item1: SingleTaskComment) => (
-                    <div key={item1.id} className="flex gap-[12px] mt-[20px]">
-                      <div className="relative h-[38px] shrink-0 aspect-square rounded-full overflow-hidden">
-                        {item?.author_avatar && (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={item?.author_avatar}
-                            alt=""
-                            className="w-full h-full object-cover"
-                          />
-                        )}
+                  item?.sub_comments
+                    ?.reverse()
+                    .map((item1: SingleTaskComment) => (
+                      <div key={item1.id} className="flex gap-[12px] mt-[20px]">
+                        <div className="relative h-[38px] shrink-0 aspect-square rounded-full overflow-hidden">
+                          {item?.author_avatar && (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={item1?.author_avatar}
+                              alt=""
+                              className="w-full h-full object-cover"
+                            />
+                          )}
+                        </div>
+                        <div className="flex flex-col gap-y-[10px]">
+                          <h1 className="text-[18px]">
+                            {item1?.author_nickname}
+                          </h1>
+                          <p className="text-[#343A40]">{item1?.text}</p>
+                        </div>
                       </div>
-                      <div className="flex flex-col gap-y-[10px]">
-                        <h1 className="text-[18px]">{item?.author_nickname}</h1>
-                        <p className="text-[#343A40]">{item?.text}</p>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
               </div>
             </div>
           ))}

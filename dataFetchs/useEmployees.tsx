@@ -1,9 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { axiosUser } from "./AxiosToken";
 
-const useEmployees = () => {
+export type EmployeesContextType = {
+  employeesData: Employee[];
+  fetchEmployees: () => void;
+};
+
+export const Employees = createContext<EmployeesContextType>({
+  employeesData: [],
+  fetchEmployees: () => {},
+});
+
+export const EmployeesContextProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [employeesData, setEmployeesData] = useState<Employee[]>([]);
 
   const fetchEmployees = () => {
@@ -22,10 +36,9 @@ const useEmployees = () => {
     fetchEmployees();
   }, []);
 
-  return {
-    employeesData,
-    fetchEmployees,
-  };
+  return (
+    <Employees.Provider value={{ employeesData, fetchEmployees }}>
+      {children}
+    </Employees.Provider>
+  );
 };
-
-export default useEmployees;

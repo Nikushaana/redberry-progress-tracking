@@ -114,19 +114,19 @@ export default function InputDropDown({
         <div
           style={{
             height: droped
-              ? data.length < 5
+              ? data.length < 4
                 ? addEmployeeButton
                   ? data.length * 42 + 45
                   : data.length * 42 + 3
                 : addEmployeeButton
-                ? 255
-                : 213
+                ? 213
+                : 171
               : 0,
           }}
           className={`bg-white w-full border-[#CED4DA] duration-75 absolute top-[42px] left-0 z-[2] showyScroll ${
             droped
               ? `rounded-b-[5px] border-[1px] border-t-0 ${
-                  data.length > 5 && "overflow-y-scroll"
+                  data.length > 4 && "overflow-y-scroll"
                 }`
               : "overflow-hidden"
           }`}
