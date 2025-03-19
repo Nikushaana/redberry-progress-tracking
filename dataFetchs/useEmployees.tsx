@@ -26,9 +26,7 @@ export const EmployeesContextProvider = ({
       .then((res) => {
         setEmployeesData(res.data);
       })
-      .catch((err) => {
-        console.log(err);
-      })
+      .catch(() => {})
       .finally(() => {});
   };
 

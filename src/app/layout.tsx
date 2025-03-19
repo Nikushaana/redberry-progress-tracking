@@ -5,6 +5,7 @@ import AddEmployeeModal from "./components/modals/addEmployeeModal";
 import { SharedStatesProvider } from "../../dataFetchs/sharedStates";
 import { ToastContainer } from "react-toastify";
 import { EmployeesContextProvider } from "../../dataFetchs/useEmployees";
+import { TasksContextProvider } from "../../dataFetchs/useTasks";
 
 export const metadata: Metadata = {
   title: "Redberry Progress Tracking",
@@ -21,11 +22,13 @@ export default function RootLayout({
       <body>
         <SharedStatesProvider>
           <EmployeesContextProvider>
-            <div>
-              <Header />
-              {children}
-              <AddEmployeeModal />
-            </div>
+            <TasksContextProvider>
+              <div>
+                <Header />
+                {children}
+                <AddEmployeeModal />
+              </div>
+            </TasksContextProvider>
           </EmployeesContextProvider>
         </SharedStatesProvider>
         <ToastContainer

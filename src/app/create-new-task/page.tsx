@@ -13,8 +13,8 @@ import * as Yup from "yup";
 import { axiosUser } from "../../../dataFetchs/AxiosToken";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import useTasks from "../../../dataFetchs/useTasks";
 import { Employees } from "../../../dataFetchs/useEmployees";
+import { Tasks } from "../../../dataFetchs/useTasks";
 
 export default function Page() {
   const router = useRouter();
@@ -22,7 +22,7 @@ export default function Page() {
   const { prioritiesData } = usePriorities();
   const { employeesData } = useContext(Employees);
   const { statusData } = useStatus();
-  const { fetchTasks } = useTasks();
+  const { fetchTasks } = useContext(Tasks);
 
   const [createNewTaskValues, setCreateNewTaskValues] =
     useState<CreateNewTaskValues>({

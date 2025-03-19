@@ -1,14 +1,15 @@
 "use client";
 
-import useTasks from "../../dataFetchs/useTasks";
+import { useContext } from "react";
 import TaskCard from "./components/card/taskCard";
 import TasksFilterModal from "./components/modals/tasksFilterModal";
+import { Tasks } from "../../dataFetchs/useTasks";
 
 export default function Page() {
-  const { tasksDataWithTitle, tasksLoader } = useTasks();
+  const { tasksDataWithTitle, tasksData, tasksLoader } = useContext(Tasks);
 
   return (
-    <div className="px-[118px] pt-[40px] pb-[140px] flex flex-col">
+    <div className="px-[118px] pt-[40px] pb-[140px] flex flex-col min-h-[calc(100vh-99px)]">
       <h1 className="text-[34px]">დავალებების გვერდი</h1>
       <TasksFilterModal />
       <div className="mt-[79px] grid grid-cols-4 gap-[52px]">
@@ -29,7 +30,7 @@ export default function Page() {
               {item.status}
             </h2>
             {tasksLoader
-              ? [1, 2, 3].map((item3: number) => (
+              ? [1, 2].map((item3: number) => (
                   <div
                     key={item3}
                     className="h-[300px] w-full rounded-[15px] overflow-hidden"
@@ -43,6 +44,11 @@ export default function Page() {
           </div>
         ))}
       </div>
+      {tasksData.length < 1 && tasksLoader == false && (
+        <p className="text-center mt-[100px] text-[18px] text-gray-500 select-none">
+          დავალებები დამატებული არ არის
+        </p>
+      )}
     </div>
   );
 }

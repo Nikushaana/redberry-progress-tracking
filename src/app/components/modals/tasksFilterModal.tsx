@@ -1,24 +1,26 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
-import useTasks from "../../../../dataFetchs/useTasks";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { HiOutlineChevronDown } from "react-icons/hi";
 import useDepartments from "../../../../dataFetchs/useDepartments";
 import usePriorities from "../../../../dataFetchs/usePriorities";
 import { Employees } from "../../../../dataFetchs/useEmployees";
 import { FiCheck } from "react-icons/fi";
 import Button3 from "../buttons/button3";
+import { Tasks } from "../../../../dataFetchs/useTasks";
 
 export default function TasksFilterModal() {
+  const DropFilterRef = useRef<HTMLDivElement>(null);
   const { departmentsData } = useDepartments();
   const { prioritiesData } = usePriorities();
+
   const {
     filteredItems,
     setFilteredItems,
     HandleSetInParams,
     dropedFilterComponent,
     setDropedFilterComponent,
-  } = useTasks();
+  } = useContext(Tasks);
   const { employeesData } = useContext(Employees);
 
   const [filterAllComponents, setFilterAllComponents] = useState<
@@ -67,34 +69,6 @@ export default function TasksFilterModal() {
     ]);
   }, [departmentsData, employeesData, prioritiesData, dropedFilterComponent]);
 
-  // get from params
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-
-    const departmentsFromParams = searchParams.get("departments");
-    const prioritiesFromParams = searchParams.get("priorities");
-    const employeesFromParams = searchParams.get("employees");
-
-    setFilteredItems((prev) => ({
-      ...prev,
-
-      departments: departmentsFromParams
-        ? departmentsFromParams
-            .split(",")
-            .map(Number)
-            .filter((n) => !isNaN(n))
-        : [],
-      priorities: prioritiesFromParams
-        ? prioritiesFromParams
-            .split(",")
-            .map(Number)
-            .filter((n) => !isNaN(n))
-        : [],
-      employees: employeesFromParams ? employeesFromParams : "",
-    }));
-  }, []);
-  // get from params
-
   const handleCheckFilterValues = (
     item: FilterComponent,
     item1: PickedInputDropDownType
@@ -112,8 +86,27 @@ export default function TasksFilterModal() {
     }));
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      DropFilterRef.current &&
+      !DropFilterRef.current.contains(event.target as Node)
+    ) {
+      setDropedFilterComponent("");
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="relative mt-[52px] flex items-center gap-[45px] rounded-[10px] border-[1px] border-[#DEE2E6] h-[44px] self-start">
+    <div
+      ref={DropFilterRef}
+      className="relative mt-[52px] flex items-center gap-[45px] rounded-[10px] border-[1px] border-[#DEE2E6] h-[44px] self-start shrink-0"
+    >
       {filterAllComponents.map((item) => (
         <div key={item.id} className="">
           <div
@@ -143,52 +136,60 @@ export default function TasksFilterModal() {
               : "z-[-1] opacity-0 top-[40px]"
           }`}
           >
-            <div
-              style={{
-                height: item.data
-                  ? item.data?.length > 4
-                    ? 161
-                    : item.data?.length * 24 + (item.data?.length - 1) * 22
-                  : 0,
-              }}
-              className={`flex flex-col gap-y-[22px] showyScroll ${
-                item.data && item.data?.length > 4 && "overflow-y-scroll"
-              }`}
-            >
-              {item.data?.map((item1: PickedInputDropDownType) => (
+            {item.data && item.data.length < 1 ? (
+              <p className="text-center text-[15px] text-gray-500 select-none">
+                {item.title}ს ინფორმაცია არ არსებობს
+              </p>
+            ) : (
+              <>
                 <div
-                  key={item1.id}
-                  onClick={() => {
-                    handleCheckFilterValues(item, item1);
+                  style={{
+                    height: item.data
+                      ? item.data?.length > 4
+                        ? 161
+                        : item.data?.length * 24 + (item.data?.length - 1) * 22
+                      : 0,
                   }}
-                  className="flex items-center gap-[15px] cursor-pointer"
+                  className={`flex flex-col gap-y-[22px] showyScroll ${
+                    item.data && item.data?.length > 4 && "overflow-y-scroll"
+                  }`}
                 >
-                  <div
-                    className={`w-[22px] aspect-square rounded-[6px] border-[1.5px] border-black flex items-center justify-center duration-100 ${
-                      item.titleEng === "employees"
-                        ? filteredItems.employees == String(item1.id)
-                          ? "text-black"
-                          : "text-transparent"
-                        : filteredItems[item.titleEng].includes(item1.id)
-                        ? "text-black"
-                        : "text-transparent"
-                    }`}
-                  >
-                    <FiCheck />
-                  </div>
-                  <p className="text-[16px]">
-                    {item1.name} {item1?.surname && item1?.surname}
-                  </p>
+                  {item.data?.map((item1: PickedInputDropDownType) => (
+                    <div
+                      key={item1.id}
+                      onClick={() => {
+                        handleCheckFilterValues(item, item1);
+                      }}
+                      className="flex items-center gap-[15px] cursor-pointer"
+                    >
+                      <div
+                        className={`w-[22px] aspect-square rounded-[6px] border-[1.5px] border-BrightViolet flex items-center justify-center duration-100 ${
+                          item.titleEng === "employees"
+                            ? filteredItems.employees == String(item1.id)
+                              ? "text-BrightViolet"
+                              : "text-transparent"
+                            : filteredItems[item.titleEng].includes(item1.id)
+                            ? "text-BrightViolet"
+                            : "text-transparent"
+                        }`}
+                      >
+                        <FiCheck />
+                      </div>
+                      <p className="text-[16px]">
+                        {item1.name} {item1?.surname && item1?.surname}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
 
-            <Button3
-              text="არჩევა"
-              action={() => {
-                HandleSetInParams();
-              }}
-            />
+                <Button3
+                  text="არჩევა"
+                  action={() => {
+                    HandleSetInParams(item.titleEng);
+                  }}
+                />
+              </>
+            )}
           </div>
         </div>
       ))}

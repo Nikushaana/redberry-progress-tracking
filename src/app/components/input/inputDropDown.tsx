@@ -136,7 +136,7 @@ export default function InputDropDown({
               onClick={() => {
                 setAddEmployeeModalStatus(true);
               }}
-              className="h-[42px] px-[10px] flex items-center gap-[8px] cursor-pointer text-BrightViolet"
+              className="h-[42px] px-[10px] flex items-center gap-[8px] cursor-pointer text-BrightViolet hover:bg-[#F8F9FA] duration-75"
             >
               <GoPlusCircle className="text-[18px]" />
               <h2>დაამატე თანამშრომელი</h2>
@@ -151,8 +151,8 @@ export default function InputDropDown({
                 );
                 setDroped(false);
               }}
-              className={`px-[10px] w-full h-[42px] flex items-center cursor-pointer hover:bg-gray-100 duration-75 ${
-                pickedInput?.id === item.id && "bg-gray-100"
+              className={`px-[10px] w-full h-[42px] flex items-center cursor-pointer hover:bg-[#F8F9FA] duration-75 ${
+                pickedInput?.id === item.id && "bg-[#F8F9FA]"
               }`}
             >
               {item.icon && (
