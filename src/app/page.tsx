@@ -12,7 +12,7 @@ export default function Page() {
     <div className="px-[118px] pt-[40px] pb-[140px] flex flex-col min-h-[calc(100vh-99px)]">
       <h1 className="text-[34px]">დავალებების გვერდი</h1>
       <TasksFilterModal />
-      <div className="mt-[79px] grid grid-cols-4 gap-[52px]">
+      <div className="mt-[25px] grid grid-cols-4 gap-[52px]">
         {tasksDataWithTitle?.map((item: Task, index: number) => (
           <div key={index} className="flex flex-col gap-y-[30px]">
             <h2

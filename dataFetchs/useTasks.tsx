@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import { axiosUser } from "./AxiosToken";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export type TasksContextType = {
   tasksData: TaskItem[];
@@ -16,7 +16,10 @@ export type TasksContextType = {
   tasksDataWithTitle: Task[];
   dropedFilterComponent: string;
   filteredItems: FilterItems;
+  filteredItemsFromParams: FilterItems;
   setFilteredItems: Dispatch<SetStateAction<FilterItems>>;
+  setFilteredItemsFromParams: Dispatch<SetStateAction<FilterItems>>;
+  FilterTasks: () => void;
   setDropedFilterComponent: Dispatch<SetStateAction<string>>;
   HandleSetInParams: (titleEng: string) => void;
   fetchTasks: () => void;
@@ -53,7 +56,14 @@ export const Tasks = createContext<TasksContextType>({
     priorities: [],
     employees: "",
   },
+  filteredItemsFromParams: {
+    departments: [],
+    priorities: [],
+    employees: "",
+  },
   setFilteredItems: () => {},
+  setFilteredItemsFromParams: () => {},
+  FilterTasks: () => {},
   setDropedFilterComponent: () => {},
   HandleSetInParams: () => {},
   fetchTasks: () => {},
@@ -64,7 +74,7 @@ export const TasksContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const searchParams = new URLSearchParams(window.location.search);
+  const searchParams = useSearchParams();
   const pathname = usePathname();
   const [tasksData, setTasksData] = useState<TaskItem[]>([]);
   const [tasksLoader, setTasksLoader] = useState<boolean>(true);
@@ -96,6 +106,12 @@ export const TasksContextProvider = ({
     priorities: [],
     employees: "",
   });
+  const [filteredItemsFromParams, setFilteredItemsFromParams] =
+    useState<FilterItems>({
+      departments: [],
+      priorities: [],
+      employees: "",
+    });
 
   const fetchTasks = () => {
     setTasksLoader(true);
@@ -112,8 +128,6 @@ export const TasksContextProvider = ({
 
   // get from params
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-
     const departmentsFromParams = searchParams.get("departments");
     const prioritiesFromParams = searchParams.get("priorities");
     const employeesFromParams = searchParams.get("employees");
@@ -139,8 +153,6 @@ export const TasksContextProvider = ({
   // get from params
 
   const FilterTasks = () => {
-    const searchParams = new URLSearchParams(window.location.search);
-
     const departmentsFromParams = searchParams.get("departments");
     const prioritiesFromParams = searchParams.get("priorities");
     const employeesFromParams = searchParams.get("employees");
@@ -157,6 +169,25 @@ export const TasksContextProvider = ({
           .map(Number)
           .filter((n) => !isNaN(n))
       : [];
+
+    setFilteredItemsFromParams((prev) => ({
+      ...prev,
+
+      departments: departmentsFromParams
+        ? departmentsFromParams
+            .split(",")
+            .map(Number)
+            .filter((n) => !isNaN(n))
+        : [],
+      priorities: prioritiesFromParams
+        ? prioritiesFromParams
+            .split(",")
+            .map(Number)
+            .filter((n) => !isNaN(n))
+        : [],
+      employees: employeesFromParams ? employeesFromParams : "",
+    }));
+
     const employees = employeesFromParams ? employeesFromParams : "";
 
     const filteredTaskData =
@@ -222,6 +253,9 @@ export const TasksContextProvider = ({
         tasksLoader,
         filteredItems,
         setFilteredItems,
+        filteredItemsFromParams,
+        setFilteredItemsFromParams,
+        FilterTasks,
         dropedFilterComponent,
         setDropedFilterComponent,
         HandleSetInParams,
