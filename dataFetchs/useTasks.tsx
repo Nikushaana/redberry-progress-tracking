@@ -64,13 +64,7 @@ export const TasksContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [searchParams, setSearchParams] = useState<URLSearchParams | null>(
-    null
-  );
-
-  useEffect(() => {
-    setSearchParams(new URLSearchParams(window.location.search));
-  }, []);
+  const searchParams = new URLSearchParams(window.location.search);
   const pathname = usePathname();
   const [tasksData, setTasksData] = useState<TaskItem[]>([]);
   const [tasksLoader, setTasksLoader] = useState<boolean>(true);
@@ -143,8 +137,6 @@ export const TasksContextProvider = ({
     }));
   }, []);
   // get from params
-
-  console.log(searchParams?.toString());
 
   const FilterTasks = () => {
     const searchParams = new URLSearchParams(window.location.search);

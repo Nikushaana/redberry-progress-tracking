@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useEffect, useState } from "react";
+import React, { use, useContext, useEffect, useState } from "react";
 import { axiosUser } from "../../../../dataFetchs/AxiosToken";
 import PriorityAndDepartment from "@/app/components/priorityAndDepartment/PriorityAndDepartment";
 import { LuChartPie } from "react-icons/lu";
@@ -14,6 +14,7 @@ import InputTextarea from "@/app/components/input/inputTextarea";
 import { PiArrowBendUpLeftFill } from "react-icons/pi";
 import { BiLoaderAlt } from "react-icons/bi";
 import { toast } from "react-toastify";
+import { Tasks } from "../../../../dataFetchs/useTasks";
 
 export default function Page({
   params,
@@ -21,6 +22,7 @@ export default function Page({
   params: Promise<{ taskId: string }>;
 }) {
   const { statusData } = useStatus();
+  const { fetchTasks } = useContext(Tasks);
   moment.locale("ka");
   const { taskId } = use(params);
 
@@ -63,6 +65,7 @@ export default function Page({
         })
         .then(() => {
           toast.success("სტატუსი შეიცვალა!");
+          fetchTasks();
         })
         .catch(() => {
           toast.error("სტატუსი ვერ შეიცვალა!");
@@ -120,6 +123,7 @@ export default function Page({
         .then(() => {
           setSingleTaskCommentsRender(`${new Date()}`);
 
+          fetchTasks();
           toast.success("კომენტარი დაიწერა!");
         })
         .catch(() => {
@@ -164,6 +168,7 @@ export default function Page({
             ...prev,
             parent_id: null,
           }));
+          fetchTasks();
           toast.success("საპასუხო კომენტარი დაიწერა!");
         })
         .catch(() => {
