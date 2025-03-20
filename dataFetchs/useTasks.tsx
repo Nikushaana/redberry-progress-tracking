@@ -187,6 +187,23 @@ export const TasksContextProvider = ({
         : [],
       employees: employeesFromParams ? employeesFromParams : "",
     }));
+    setFilteredItems((prev) => ({
+      ...prev,
+
+      departments: departmentsFromParams
+        ? departmentsFromParams
+            .split(",")
+            .map(Number)
+            .filter((n) => !isNaN(n))
+        : [],
+      priorities: prioritiesFromParams
+        ? prioritiesFromParams
+            .split(",")
+            .map(Number)
+            .filter((n) => !isNaN(n))
+        : [],
+      employees: employeesFromParams ? employeesFromParams : "",
+    }));
 
     const employees = employeesFromParams ? employeesFromParams : "";
 

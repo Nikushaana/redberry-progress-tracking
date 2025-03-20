@@ -121,7 +121,7 @@ export default function TasksFilterModal() {
       if (updatedDepartments.length > 0) {
         searchParams.set("departments", updatedDepartments.join(","));
       } else {
-        searchParams.delete("region");
+        searchParams.delete("departments");
       }
     }
     if (name === "priorities") {
@@ -143,7 +143,7 @@ export default function TasksFilterModal() {
         ...prev,
         employees: "",
       }));
-      searchParams.set("employees", "");
+      searchParams.delete("employees");
     }
     if (name === "allFilter") {
       setFilteredItems({
@@ -262,23 +262,23 @@ export default function TasksFilterModal() {
         ))}
       </div>
 
-      <div className="h-[29px] mt-[25px] ">
+      <div className="min-h-[29px] mt-[25px] ">
         {(filteredItemsFromParams.departments.length > 0 ||
           filteredItemsFromParams.priorities.length > 0 ||
           filteredItemsFromParams.employees) && (
-          <div className="h-full flex items-center gap-[16px]">
+          <div className="flex flex-wrap items-center gap-[16px]">
             {filteredItemsFromParams.departments.length > 0 &&
               filteredItemsFromParams.departments.map((item) => (
                 <div
                   key={item}
-                  className="h-full px-[10px] flex items-center gap-[4px] cursor-pointer text-[14px] border-[1px] border-[#CED4DA] rounded-full"
+                  className="h-[29px] px-[10px] flex items-center gap-[4px] cursor-pointer text-[14px] border-[1px] border-[#CED4DA] rounded-full"
                 >
                   {departmentsData.find((item1) => item1.id == item)?.name}
                   <BsXLg
                     onClick={() => {
                       handleDeleteFilter("departments", item);
                     }}
-                    className="text-[12px]"
+                    className="text-[12px] h-full"
                   />
                 </div>
               ))}
@@ -286,19 +286,19 @@ export default function TasksFilterModal() {
               filteredItemsFromParams.priorities.map((item) => (
                 <div
                   key={item}
-                  className="h-full px-[10px] flex items-center gap-[4px] cursor-pointer text-[14px] border-[1px] border-[#CED4DA] rounded-full"
+                  className="h-[29px] px-[10px] flex items-center gap-[4px] cursor-pointer text-[14px] border-[1px] border-[#CED4DA] rounded-full"
                 >
                   {prioritiesData.find((item2) => item2.id == item)?.name}
                   <BsXLg
                     onClick={() => {
                       handleDeleteFilter("priorities", item);
                     }}
-                    className="text-[12px]"
+                    className="text-[12px] h-full"
                   />
                 </div>
               ))}
             {filteredItemsFromParams.employees && (
-              <div className="h-full px-[10px] flex items-center gap-[4px] cursor-pointer text-[14px] border-[1px] border-[#CED4DA] rounded-full">
+              <div className="h-[29px] px-[10px] flex items-center gap-[4px] cursor-pointer text-[14px] border-[1px] border-[#CED4DA] rounded-full">
                 {employeesData.find(
                   (item3) =>
                     item3.id == Number(filteredItemsFromParams.employees)
@@ -315,7 +315,7 @@ export default function TasksFilterModal() {
                       filteredItemsFromParams.employees
                     );
                   }}
-                  className="text-[12px]"
+                  className="text-[12px] h-full"
                 />
               </div>
             )}
