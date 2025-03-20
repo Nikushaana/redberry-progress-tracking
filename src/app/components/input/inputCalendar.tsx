@@ -14,9 +14,9 @@ export default function InputCalendar({
   const getTomorrowDate = (): string => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow.toISOString().split("T")[0]; 
+    return tomorrow.toISOString().split("T")[0];
   };
-  
+
   const [input, setInput] = useState<string>(getTomorrowDate());
 
   useEffect(() => {
@@ -60,9 +60,9 @@ export default function InputCalendar({
           type="date"
           name={name}
           value={input}
-          min={new Date().toISOString().split('T')[0]}
+          min={new Date().toISOString().split("T")[0]}
           onChange={handleInputChange}
-          className="w-full bg-transparent outline-none text-[14px]"
+          className="w-full h-full outline-none text-[14px]"
         />
       </div>
       {errorsData?.map((item: ErrorItem) => (
