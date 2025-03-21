@@ -44,7 +44,7 @@ export default function Page() {
           </div>
         ))}
       </div>
-      {!tasksDataWithTitle.find((item) => item.tasks.length > 0) && (
+      {!tasksDataWithTitle.find((item) => item.tasks.length > 0) && tasksData.length > 0 && (
         <p className="text-center mt-[100px] text-[18px] text-gray-500 select-none">
           ასეთი დავალებები არ მოიძებნა
         </p>
