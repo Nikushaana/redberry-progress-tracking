@@ -32,7 +32,7 @@ export default function TaskCard({ data }: Taskcard) {
       </div>
       <div className="px-[10px] flex flex-col gap-y-[12px]">
         <h1 className="text-[15px]">{data?.name}</h1>
-        <p className="text-[14px] text-[#343A40]">
+        <p className="text-[14px] text-[#343A40] break-all">
           {data?.description && data?.description.length > 100
             ? `${data?.description.slice(0, 100)}..`
             : data?.description}

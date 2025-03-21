@@ -219,7 +219,7 @@ export default function Page({
               <div className="wave"></div>
             </div>
           ) : (
-            <p className="text-[18px] mt-[26px]">
+            <p className="text-[18px] mt-[26px] break-all">
               {singleTaskData?.description}
             </p>
           )}
